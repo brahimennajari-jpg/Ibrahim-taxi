@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Ibrahim — Your Taxi in Morocco</title>
+
+<!-- PWA Meta Tags -->
+<meta name="application-name" content="Ibrahim Taxi 🚖">
+<meta name="description" content="Private taxi in Morocco — fixed prices, no surprises. Book via WhatsApp!">
+<meta name="theme-color" content="#C9A84C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ibrahim Taxi">
+
+<!-- PWA Manifest (inline via JS blob) -->
+<link id="manifest-link" rel="manifest">
+
+<!-- iOS splash / icon -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%230F0A04'/><text y='340' x='256' font-size='300' text-anchor='middle'>🚖</text><text y='460' x='256' font-size='72' text-anchor='middle' fill='%23C9A84C' font-family='serif' font-weight='bold'>IBRAHIM</text></svg>">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --red: #C0392B;
+    --green: #1A7A4A;
+    --dark: #0F0A04;
+    --sand: #F5EDD8;
+    --cream: #FAF6EE;
+    --text: #2C1810;
+  }
+
+  body {
+    background: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+
+  /* Moroccan tile background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(201,168,76,0.04) 0px, rgba(201,168,76,0.04) 1px, transparent 1px, transparent 30px),
+      repeating-linear-gradient(-45deg, rgba(201,168,76,0.04) 0px, rgba(201,168,76,0.04) 1px, transparent 1px, transparent 30px);
+    pointer-events: none;
+  }
+
+  .card {
+    width: min(420px, 96vw);
+    background: var(--cream);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.3);
+    animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both;
+    margin: 24px auto;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(40px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Hero banner */
+  .hero {
+    background: linear-gradient(160deg, #1A0A00 0%, #3D1F00 50%, #1A0A00 100%);
+    padding: 36px 28px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '✦ ✦ ✦';
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(201,168,76,0.3);
+    font-size: 10px;
+    letter-spacing: 8px;
+  }
+
+  /* Geometric arch */
+  .arch {
+    width: 100px;
+    height: 100px;
+    border-radius: 50px 50px 0 0;
+    border: 2px solid var(--gold);
+    margin: 0 auto 16px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .arch::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(201,168,76,0.15), transparent);
+  }
+
+  .arch-icon {
+    font-size: 44px;
+    margin-top: 8px;
+  }
+
+  .name {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--gold);
+    text-align: center;
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+
+  .tagline {
+    text-align: center;
+    color: rgba(255,255,255,0.55);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  /* Flag strip */
+  .flag-strip {
+    display: flex;
+    height: 5px;
+  }
+  .flag-strip span {
+    flex: 1;
+  }
+  .flag-strip .f-red   { background: var(--red); }
+  .flag-strip .f-green { background: var(--green); }
+  .flag-strip .f-gold  { background: var(--gold); }
+
+  /* Rating stars */
+  .rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 14px 0 0;
+  }
+  .stars { color: var(--gold); font-size: 16px; letter-spacing: 2px; }
+  .rating-text { font-size: 12px; color: rgba(255,255,255,0.4); margin-left: 4px; }
+
+  /* Body content */
+  .body {
+    padding: 24px 22px;
+  }
+
+  /* Language toggle */
+  .lang-toggle {
+    display: flex;
+    background: rgba(201,168,76,0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 22px;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .lang-btn {
+    flex: 1;
+    padding: 9px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    color: var(--text);
+    border: none;
+    background: none;
+    font-family: inherit;
+  }
+
+  .lang-btn.active {
+    background: var(--gold);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* Info content */
+  .info-block { display: none; }
+  .info-block.visible { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(201,168,76,0.2);
+  }
+
+  .pitch {
+    font-size: 14.5px;
+    color: var(--text);
+    line-height: 1.65;
+    margin-bottom: 22px;
+    background: rgba(201,168,76,0.06);
+    border-left: 3px solid var(--gold);
+    padding: 12px 14px;
+    border-radius: 0 10px 10px 0;
+  }
+
+  /* Services grid */
+  .services {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .service-item {
+    background: rgba(201,168,76,0.07);
+    border: 1px solid rgba(201,168,76,0.18);
+    border-radius: 12px;
+    padding: 12px 10px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .service-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(201,168,76,0.15);
+  }
+
+  .service-icon { font-size: 22px; margin-bottom: 5px; }
+  .service-name { font-size: 12px; font-weight: 500; color: var(--text); }
+
+  /* Price table */
+  .price-table {
+    margin-bottom: 22px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    font-size: 13px;
+  }
+
+  .price-row:last-child { border-bottom: none; }
+  .price-row:nth-child(odd) { background: rgba(201,168,76,0.04); }
+  .price-route { color: var(--text); }
+  .price-val { color: var(--gold); font-weight: 600; font-size: 14px; }
+
+  /* Action buttons */
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-whatsapp {
+    background: #25D366;
+    color: #fff;
+  }
+
+  .btn-whatsapp:hover { background: #1da851; transform: translateY(-1px); }
+
+  .btn-call {
+    background: var(--gold);
+    color: var(--dark);
+  }
+
+  .btn-call:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--gold);
+    border: 1.5px solid rgba(201,168,76,0.4);
+    font-size: 13px;
+  }
+
+  .btn-secondary:hover { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+
+  /* Review section */
+  .reviews {
+    margin-bottom: 22px;
+  }
+
+  .review-card {
+    background: rgba(201,168,76,0.05);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    position: relative;
+  }
+
+  .review-card::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: rgba(201,168,76,0.25);
+    position: absolute;
+    top: -2px;
+    left: 10px;
+    line-height: 1;
+  }
+
+  .review-author {
+    font-weight: 600;
+    color: var(--gold);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 6px;
+  }
+
+  .review-flag { font-size: 14px; }
+
+  /* Availability */
+  .availability {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+
+  .avail-item {
+    background: rgba(26,122,74,0.08);
+    border: 1px solid rgba(26,122,74,0.2);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .avail-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Share QR hint */
+  .share-hint {
+    text-align: center;
+    font-size: 11px;
+    color: rgba(44,24,16,0.45);
+    padding: 0 0 6px;
+  }
+
+  /* Footer */
+  .footer {
+    background: var(--dark);
+    padding: 14px;
+    text-align: center;
+  }
+
+  .footer-pattern {
+    color: rgba(201,168,76,0.25);
+    font-size: 16px;
+    letter-spacing: 6px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .footer-text {
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 1px;
+  }
+
+  /* Booking section */
+  .booking-section {
+    background: rgba(201,168,76,0.05);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 16px;
+    padding: 18px 16px;
+    margin-bottom: 20px;
+  }
+
+  .booking-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 9px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1.5px solid rgba(201,168,76,0.3);
+    background: transparent;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active {
+    background: var(--gold);
+    color: #fff;
+    border-color: var(--gold);
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1.5px solid rgba(201,168,76,0.25);
+    background: rgba(255,255,255,0.7);
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input:focus {
+    border-color: var(--gold);
+    background: #fff;
+  }
+
+  /* Platform buttons */
+  .platform-intro {
+    font-size: 12.5px;
+    color: rgba(44,24,16,0.6);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .btn-platform {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    border-radius: 12px;
+    text-decoration: none;
+    margin-bottom: 10px;
+    border: 1.5px solid transparent;
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+
+  .btn-platform:hover { transform: translateX(3px); }
+
+  .btn-airbnb {
+    background: #fff1f0;
+    border-color: rgba(255,90,95,0.3);
+    color: #c13515;
+  }
+
+  .btn-gyg {
+    background: #fff9f0;
+    border-color: rgba(255,152,0,0.3);
+    color: #e65100;
+  }
+
+  .btn-viator {
+    background: #f0f7ff;
+    border-color: rgba(0,100,200,0.2);
+    color: #0055b3;
+  }
+
+  .platform-text { flex: 1; }
+  .platform-name { font-weight: 700; font-size: 13px; }
+  .platform-sub  { font-size: 11px; opacity: 0.65; margin-top: 1px; }
+  .platform-arrow { font-size: 16px; opacity: 0.5; }
+
+  .platform-note {
+    font-size: 11.5px;
+    color: var(--green);
+    background: rgba(26,122,74,0.07);
+    border: 1px solid rgba(26,122,74,0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="arch">
+      <span class="arch-icon">🚖</span>
+    </div>
+    <div class="name">Ibrahim Ennajari</div>
+    <div class="tagline">Private Taxi · Morocco</div>
+    <div class="rating">
+      <span class="stars">★★★★★</span>
+      <span class="rating-text">5.0 · 200+ trips</span>
+    </div>
+  </div>
+
+  <div class="flag-strip">
+    <span class="f-red"></span>
+    <span class="f-green"></span>
+    <span class="f-red"></span>
+  </div>
+
+  <!-- Body -->
+  <div class="body">
+
+    <!-- Language Toggle -->
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">🇬🇧 English</button>
+      <button class="lang-btn" onclick="setLang('fr')">🇫🇷 Français</button>
+      <button class="lang-btn" onclick="setLang('ar')">🇲🇦 العربية</button>
+    </div>
+
+    <!-- ENGLISH -->
+    <div class="info-block visible" id="en">
+      <div class="section-title">Welcome</div>
+      <div class="pitch">
+        👋 Hi! I'm Ibrahim, your reliable private driver in Morocco. I offer <strong>fixed prices</strong>, no meter, no surprises — just a safe and comfortable ride. Let me know where you're going!
+      </div>
+
+      <div class="section-title">My Services</div>
+      <div class="services">
+        <div class="service-item"><div class="service-icon">🏙️</div><div class="service-name">City Transfers</div></div>
+        <div class="service-item"><div class="service-icon">✈️</div><div class="service-name">Airport Pickup</div></div>
+        <div class="service-item"><div class="service-icon">🏔️</div><div class="service-name">Day Trips</div></div>
+        <div class="service-item"><div class="service-icon">🗺️</div><div class="service-name">Custom Tours</div></div>
+        <div class="service-item"><div class="service-icon">🛍️</div><div class="service-name">Souk Shopping</div></div>
+        <div class="service-item"><div class="service-icon">🌙</div><div class="service-name">Night Rides</div></div>
+      </div>
+
+      <div class="section-title">Fixed Prices from Rabat-Salé Airport (MAD)</div>
+      <div class="price-table">
+        <div class="price-row"><span class="price-route">✈️ Airport → Salé Medina</span><span class="price-val">100–150</span></div>
+        <div class="price-row"><span class="price-route">✈️ Airport → Rabat Centre</span><span class="price-val">150–200</span></div>
+        <div class="price-row"><span class="price-route">🏙️ Airport → Agdal / Kamra / Souissi</span><span class="price-val">200</span></div>
+        <div class="price-row"><span class="price-route">🏙️ Airport → Témara</span><span class="price-val">300</span></div>
+        <div class="price-row"><span class="price-route">🏙️ Airport → Kénitra</span><span class="price-val">300</span></div>
+        <div class="price-row"><span class="price-route">🌆 Airport → Mohammedia</span><span class="price-val">400</span></div>
+        <div class="price-row"><span class="price-route">🌆 Airport → Casablanca + CMN</span><span class="price-val">650</span></div>
+        <div class="price-row"><span class="price-route">🏔️ Airport → Meknès</span><span class="price-val">700</span></div>
+        <div class="price-row"><span class="price-route">🕌 Airport → Fès</span><span class="price-val">900</span></div>
+        <div class="price-row"><span class="price-route">🌹 Airport → Marrakech</span><span class="price-val">1300</span></div>
+        <div class="price-row"><span class="price-route">🌿 Airport → Tanger</span><span class="price-val">1300</span></div>
+        <div class="price-row"><span class="price-route">🏜️ Airport → Oujda</span><span class="price-val">2000</span></div>
+        <div class="price-row"><span class="price-route">🏔️ Airport → Nador</span><span class="price-val">2000</span></div>
+        <div class="price-row"><span class="price-route">🏖️ Airport → Agadir</span><span class="price-val">2000</span></div>
+      </div>
+
+      <div class="section-title">What Travelers Say</div>
+      <div class="reviews">
+        <div class="review-card">
+          Hassan was amazing! Punctual, honest, and gave us great tips on where to eat. Highly recommend.
+          <div class="review-author"><span class="review-flag">🇩🇪</span> Maria, Germany</div>
+        </div>
+        <div class="review-card">
+          Best taxi experience in all of Morocco. Fixed price, clean car, super friendly.
+          <div class="review-author"><span class="review-flag">🇺🇸</span> James, USA</div>
+        </div>
+      </div>
+
+      <div class="section-title">Availability</div>
+      <div class="availability">
+        <div class="avail-item"><div class="avail-dot"></div>Mon–Fri 6am–11pm</div>
+        <div class="avail-item"><div class="avail-dot"></div>Weekends all day</div>
+        <div class="avail-item"><div class="avail-dot"></div>Airport pickups 24h</div>
+        <div class="avail-item"><div class="avail-dot"></div>Advance booking OK</div>
+      </div>
+    </div>
+
+    <!-- FRENCH -->
+    <div class="info-block" id="fr">
+      <div class="section-title">Bienvenue</div>
+      <div class="pitch">
+        👋 Bonjour! Je suis Ibrahim, votre chauffeur privé au Maroc. Je propose des <strong>prix fixes</strong>, sans compteur, sans surprise — juste un trajet sûr et confortable. Dites-moi où vous allez !
+      </div>
+
+      <div class="section-title">Mes Services</div>
+      <div class="services">
+        <div class="service-item"><div class="service-icon">🏙️</div><div class="service-name">Transferts ville</div></div>
+        <div class="service-item"><div class="service-icon">✈️</div><div class="service-name">Aéroport</div></div>
+        <div class="service-item"><div class="service-icon">🏔️</div><div class="service-name">Excursions</div></div>
+        <div class="service-item"><div class="service-icon">🗺️</div><div class="service-name">Visites guidées</div></div>
+        <div class="service-item"><div class="service-icon">🛍️</div><div class="service-name">Shopping souk</div></div>
+        <div class="service-item"><div class="service-icon">🌙</div><div class="service-name">Trajets de nuit</div></div>
+      </div>
+
+      <div class="section-title">Prix fixes depuis l'aéroport Rabat-Salé (MAD)</div>
+      <div class="price-table">
+        <div class="price-row"><span class="price-route">✈️ Aéroport → Centre Rabat</span><span class="price-val">100–150</span></div>
+        <div class="price-row"><span class="price-route">✈️ Aéroport → Salé</span><span class="price-val">80–120</span></div>
+        <div class="price-row"><span class="price-route">🏙️ Aéroport → Témara</span><span class="price-val">150–200</span></div>
+        <div class="price-row"><span class="price-route">🏙️ Aéroport → Kénitra</span><span class="price-val">300–400</span></div>
+        <div class="price-row"><span class="price-route">🌆 Aéroport → Casablanca</span><span class="price-val">700–800</span></div>
+        <div class="price-row"><span class="price-route">🕌 Aéroport → Fès</span><span class="price-val">900–1100</span></div>
+        <div class="price-row"><span class="price-route">🌿 Aéroport → Tanger</span><span class="price-val">900–1100</span></div>
+        <div class="price-row"><span class="price-route">🏔️ Aéroport → Meknès</span><span class="price-val">600–700</span></div>
+        <div class="price-row"><span class="price-route">🌹 Aéroport → Marrakech</span><span class="price-val">1300–1500</span></div>
+        <div class="price-row"><span class="price-route">🌊 Aéroport → Essaouira</span><span class="price-val">1500–1800</span></div>
+        <div class="price-row"><span class="price-route">🏖️ Aéroport → Agadir</span><span class="price-val">2000–2400</span></div>
+        <div class="price-row"><span class="price-route">💙 Aéroport → Chefchaouen</span><span class="price-val">1100–1300</span></div>
+        <div class="price-row"><span class="price-route">🏜️ Aéroport → Ouarzazate</span><span class="price-val">2000–2300</span></div>
+      </div>
+
+      <div class="section-title">Témoignages</div>
+      <div class="reviews">
+        <div class="review-card">
+          Hassan était fantastique! Ponctuel, honnête et de bons conseils restaurants. Je recommande vivement.
+          <div class="review-author"><span class="review-flag">🇩🇪</span> Maria, Allemagne</div>
+        </div>
+        <div class="review-card">
+          Meilleure expérience taxi au Maroc. Prix fixe, voiture propre, très sympathique.
+          <div class="review-author"><span class="review-flag">🇺🇸</span> James, États-Unis</div>
+        </div>
+      </div>
+
+      <div class="section-title">Disponibilité</div>
+      <div class="availability">
+        <div class="avail-item"><div class="avail-dot"></div>Lun–Ven 6h–23h</div>
+        <div class="avail-item"><div class="avail-dot"></div>Week-end toute la journée</div>
+        <div class="avail-item"><div class="avail-dot"></div>Aéroport 24h/24</div>
+        <div class="avail-item"><div class="avail-dot"></div>Réservation à l'avance</div>
+      </div>
+    </div>
+
+    <!-- ARABIC -->
+    <div class="info-block" id="ar" dir="rtl">
+      <div class="section-title">مرحباً بكم</div>
+      <div class="pitch">
+        👋 السلام عليكم! أنا إبراهيم، سائقكم الخاص في المغرب. أقدم <strong>أسعاراً ثابتة</strong> بدون عداد وبدون مفاجآت — فقط رحلة آمنة ومريحة. أخبرني إلى أين تريد الذهاب!
+      </div>
+
+      <div class="section-title">خدماتي</div>
+      <div class="services">
+        <div class="service-item"><div class="service-icon">🏙️</div><div class="service-name">نقل داخل المدينة</div></div>
+        <div class="service-item"><div class="service-icon">✈️</div><div class="service-name">استقبال المطار</div></div>
+        <div class="service-item"><div class="service-icon">🏔️</div><div class="service-name">رحلات يومية</div></div>
+        <div class="service-item"><div class="service-icon">🗺️</div><div class="service-name">جولات سياحية</div></div>
+        <div class="service-item"><div class="service-icon">🛍️</div><div class="service-name">تسوق في الأسواق</div></div>
+        <div class="service-item"><div class="service-icon">🌙</div><div class="service-name">رحلات ليلية</div></div>
+      </div>
+
+      <div class="section-title">أسعار ثابتة من مطار سلا-الرباط (درهم)</div>
+      <div class="price-table">
+        <div class="price-row"><span class="price-route">✈️ المطار → وسط الرباط</span><span class="price-val">100–150</span></div>
+        <div class="price-row"><span class="price-route">✈️ المطار → سلا</span><span class="price-val">80–120</span></div>
+        <div class="price-row"><span class="price-route">🏙️ المطار → تمارة</span><span class="price-val">150–200</span></div>
+        <div class="price-row"><span class="price-route">🏙️ المطار → القنيطرة</span><span class="price-val">300–400</span></div>
+        <div class="price-row"><span class="price-route">🌆 المطار → الدار البيضاء</span><span class="price-val">700–800</span></div>
+        <div class="price-row"><span class="price-route">🕌 المطار → فاس</span><span class="price-val">900–1100</span></div>
+        <div class="price-row"><span class="price-route">🌿 المطار → طنجة</span><span class="price-val">900–1100</span></div>
+        <div class="price-row"><span class="price-route">🏔️ المطار → مكناس</span><span class="price-val">600–700</span></div>
+        <div class="price-row"><span class="price-route">🌹 المطار → مراكش</span><span class="price-val">1300–1500</span></div>
+        <div class="price-row"><span class="price-route">🌊 المطار → الصويرة</span><span class="price-val">1500–1800</span></div>
+        <div class="price-row"><span class="price-route">🏖️ المطار → أكادير</span><span class="price-val">2000–2400</span></div>
+        <div class="price-row"><span class="price-route">💙 المطار → شفشاون</span><span class="price-val">1100–1300</span></div>
+        <div class="price-row"><span class="price-route">🏜️ المطار → ورزازات</span><span class="price-val">2000–2300</span></div>
+      </div>
+
+      <div class="section-title">ماذا يقول المسافرون</div>
+      <div class="reviews">
+        <div class="review-card">
+          حسن رائع! دقيق وأمين وأعطانا نصائح ممتازة عن المطاعم. أنصح به بشدة.
+          <div class="review-author"><span class="review-flag">🇩🇪</span> ماريا، ألمانيا</div>
+        </div>
+        <div class="review-card">
+          أفضل تجربة تاكسي في المغرب. سعر ثابت، سيارة نظيفة، ودود جداً.
+          <div class="review-author"><span class="review-flag">🇺🇸</span> جيمس، الولايات المتحدة</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOKING FORM -->
+    <div class="booking-section">
+      <div class="section-title">📅 Book a Ride</div>
+
+      <div class="booking-tabs">
+        <button class="tab-btn active" onclick="setTab('quick')">⚡ Quick Book</button>
+        <button class="tab-btn" onclick="setTab('platforms')">🌐 Platforms</button>
+      </div>
+
+      <!-- Quick Book -->
+      <div class="tab-panel" id="tab-quick">
+        <div class="form-group">
+          <label class="form-label">🗺️ Service</label>
+          <select class="form-input" id="bk-service">
+            <option value="Airport Rabat-Salé → Rabat centre (100-150 MAD)">✈️ Aéroport → Rabat centre (100–150 MAD)</option>
+            <option value="Airport Rabat-Salé → Salé (80-120 MAD)">✈️ Aéroport → Salé (80–120 MAD)</option>
+            <option value="Airport Rabat-Salé → Témara (150-200 MAD)">🏙️ Aéroport → Témara (150–200 MAD)</option>
+            <option value="Airport Rabat-Salé → Kénitra (300-400 MAD)">🏙️ Aéroport → Kénitra (300–400 MAD)</option>
+            <option value="Airport Rabat-Salé → Casablanca (700-800 MAD)">🌆 Aéroport → Casablanca (700–800 MAD)</option>
+            <option value="Airport Rabat-Salé → Fès (900-1100 MAD)">🕌 Aéroport → Fès (900–1100 MAD)</option>
+            <option value="Airport Rabat-Salé → Tanger (900-1100 MAD)">🌿 Aéroport → Tanger (900–1100 MAD)</option>
+            <option value="Airport Rabat-Salé → Meknès (600-700 MAD)">🏔️ Aéroport → Meknès (600–700 MAD)</option>
+            <option value="Airport Rabat-Salé → Marrakech (1300-1500 MAD)">🌹 Aéroport → Marrakech (1300–1500 MAD)</option>
+            <option value="Airport Rabat-Salé → Essaouira (1500-1800 MAD)">🌊 Aéroport → Essaouira (1500–1800 MAD)</option>
+            <option value="Airport Rabat-Salé → Agadir (2000-2400 MAD)">🏖️ Aéroport → Agadir (2000–2400 MAD)</option>
+            <option value="Airport Rabat-Salé → Chefchaouen (1100-1300 MAD)">💙 Aéroport → Chefchaouen (1100–1300 MAD)</option>
+            <option value="Airport Rabat-Salé → Ouarzazate (2000-2300 MAD)">🏜️ Aéroport → Ouarzazate (2000–2300 MAD)</option>
+            <option value="Custom Route">🗺️ Autre destination…</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">📅 Date</label>
+            <input class="form-input" type="date" id="bk-date">
+          </div>
+          <div class="form-group">
+            <label class="form-label">🕐 Time</label>
+            <input class="form-input" type="time" id="bk-time">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">👥 Passengers</label>
+          <select class="form-input" id="bk-pax">
+            <option>1 person</option>
+            <option>2 people</option>
+            <option>3 people</option>
+            <option>4 people</option>
+            <option>5+ people</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">📝 Notes (optional)</label>
+          <input class="form-input" type="text" id="bk-notes" placeholder="Hotel name, flight number…">
+        </div>
+        <button class="btn btn-whatsapp" style="width:100%;margin-top:4px" onclick="sendBooking()">
+          <span>💬</span> Send Booking via WhatsApp
+        </button>
+      </div>
+
+      <!-- Platforms -->
+      <div class="tab-panel" id="tab-platforms" style="display:none">
+        <p class="platform-intro">Book through trusted platforms with reviews &amp; secure payment:</p>
+        <a class="btn btn-platform btn-airbnb" href="https://www.airbnb.com/s/Morocco/experiences" target="_blank">
+          <span>🏠</span>
+          <div class="platform-text">
+            <div class="platform-name">Airbnb Experiences</div>
+            <div class="platform-sub">Guided tours · Secure payment</div>
+          </div>
+          <span class="platform-arrow">→</span>
+        </a>
+        <a class="btn btn-platform btn-gyg" href="https://www.getyourguide.com/morocco-l193/" target="_blank">
+          <span>🎟️</span>
+          <div class="platform-text">
+            <div class="platform-name">GetYourGuide</div>
+            <div class="platform-sub">Top rated · Free cancellation</div>
+          </div>
+          <span class="platform-arrow">→</span>
+        </a>
+        <a class="btn btn-platform btn-viator" href="https://www.viator.com/Morocco/d794-ttd" target="_blank">
+          <span>🌍</span>
+          <div class="platform-text">
+            <div class="platform-name">Viator (TripAdvisor)</div>
+            <div class="platform-sub">Millions of travelers</div>
+          </div>
+          <span class="platform-arrow">→</span>
+        </a>
+        <div class="platform-note">💡 Prefer direct? Use WhatsApp — no commission!</div>
+      </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="actions">
+      <a class="btn btn-whatsapp" href="https://wa.me/212638747597?text=Hi%20Ibrahim!%20I%20need%20a%20taxi%20in%20Morocco">
+        <span>💬</span> WhatsApp Me Now
+      </a>
+      <a class="btn btn-call" href="tel:+212638747597">
+        <span>📞</span> Call Ibrahim
+      </a>
+      <button class="btn btn-secondary" onclick="shareCard()">
+        <span>📤</span> Share This Card
+      </button>
+    </div>
+
+    <div class="share-hint">Scan QR or share the link · بطاقتي الرقمية</div>
+
+  </div><!-- /body -->
+
+  <!-- Footer -->
+  <div class="footer">
+    <span class="footer-pattern">⬡ ⬡ ⬡ ⬡ ⬡</span>
+    <div class="footer-text">MOROCCO · مرحباً · BIENVENUE</div>
+  </div>
+
+</div><!-- /card -->
+
+<!-- PWA Install Banner -->
+<div id="install-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:linear-gradient(135deg,#0F0A04,#2a1500); border-top:2px solid #C9A84C; padding:16px 20px; z-index:999; align-items:center; gap:12px; box-shadow:0 -8px 30px rgba(0,0,0,0.5);">
+  <span style="font-size:28px">🚖</span>
+  <div style="flex:1">
+    <div style="color:#C9A84C;font-weight:700;font-size:14px;font-family:'DM Sans',sans-serif">Add to Home Screen</div>
+    <div style="color:rgba(255,255,255,0.55);font-size:11px;font-family:'DM Sans',sans-serif">Install Ibrahim Taxi as an app</div>
+  </div>
+  <button id="install-btn" style="background:#C9A84C;color:#0F0A04;border:none;padding:9px 16px;border-radius:10px;font-weight:700;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer">Install</button>
+  <button id="dismiss-btn" style="background:transparent;color:rgba(255,255,255,0.4);border:none;font-size:20px;cursor:pointer;padding:4px">✕</button>
+</div>
+
+<script>
+  function setTab(tab) {
+    document.querySelectorAll('.tab-panel').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tab).style.display = 'block';
+    event.target.classList.add('active');
+  }
+
+  function sendBooking() {
+    const service = document.getElementById('bk-service').value;
+    const date    = document.getElementById('bk-date').value;
+    const time    = document.getElementById('bk-time').value;
+    const pax     = document.getElementById('bk-pax').value;
+    const notes   = document.getElementById('bk-notes').value;
+
+    if (!date || !time) {
+      alert('Please select a date and time.');
+      return;
+    }
+
+    const msg = `🚖 *New Booking Request*\n\n`
+      + `📌 Service: ${service}\n`
+      + `📅 Date: ${date}\n`
+      + `🕐 Time: ${time}\n`
+      + `👥 Passengers: ${pax}\n`
+      + (notes ? `📝 Notes: ${notes}\n` : '')
+      + `\nSent from Ibrahim's digital card.`;
+
+    const url = `https://wa.me/212638747597?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  }
+
+  function setLang(lang) {
+    document.querySelectorAll('.info-block').forEach(el => el.classList.remove('visible'));
+    document.querySelectorAll('.lang-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(lang).classList.add('visible');
+    event.target.classList.add('active');
+  }
+
+  function shareCard() {
+    if (navigator.share) {
+      navigator.share({
+        title: 'Ibrahim – Your Taxi in Morocco 🚖',
+        text: 'Book your private taxi in Morocco — fixed prices, no surprises!',
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('Link copied! Share it with your travelers.');
+      });
+    }
+  }
+
+  // ── PWA: inject manifest ──────────────────────────────────────────
+  const manifest = {
+    name: "Ibrahim Taxi 🚖",
+    short_name: "Ibrahim Taxi",
+    description: "Private taxi in Morocco — fixed prices, book via WhatsApp",
+    start_url: "./",
+    display: "standalone",
+    background_color: "#0F0A04",
+    theme_color: "#C9A84C",
+    orientation: "portrait",
+    icons: [
+      {
+        src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%230F0A04'/><text y='340' x='256' font-size='300' text-anchor='middle'>🚖</text></svg>",
+        sizes: "512x512",
+        type: "image/svg+xml",
+        purpose: "any maskable"
+      }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
+  document.getElementById('manifest-link').href = URL.createObjectURL(blob);
+
+  // ── PWA: install prompt banner ────────────────────────────────────
+  let deferredPrompt;
+  const banner = document.getElementById('install-banner');
+  const installBtn = document.getElementById('install-btn');
+  const dismissBtn = document.getElementById('dismiss-btn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    banner.style.display = 'flex';
+  });
+
+  installBtn && installBtn.addEventListener('click', async () => {
+    banner.style.display = 'none';
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+    }
+  });
+
+  dismissBtn && dismissBtn.addEventListener('click', () => {
+    banner.style.display = 'none';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    banner.style.display = 'none';
+  });
+
+  // ── Service Worker (offline support) ─────────────────────────────
+  if ('serviceWorker' in navigator) {
+    const swCode = `
+      const CACHE = 'ibrahim-taxi-v1';
+      self.addEventListener('install', e => {
+        e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
+      });
+      self.addEventListener('fetch', e => {
+        e.respondWith(
+          caches.match(e.request).then(r => r || fetch(e.request).catch(() => r))
+        );
+      });
+    `;
+    const swBlob = new Blob([swCode], {type: 'application/javascript'});
+    const swURL  = URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swURL).catch(() => {});
+  }
+</script>
+
+</body>
+</html>
